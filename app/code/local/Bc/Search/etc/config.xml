@@ -1,0 +1,7 @@
+<config>
+    <modules>
+        <Bc_Search>
+            <version>0.1.0</version>
+        </Bc_Search>
+    </modules>
+</config>
