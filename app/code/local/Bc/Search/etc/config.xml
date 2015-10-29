@@ -4,4 +4,69 @@
             <version>0.1.0</version>
         </Bc_Search>
     </modules>
+    <global>
+        <blocks>
+            <autocomplete>
+                <class>Bc_Search_Block</class>
+            </autocomplete>
+        </blocks>
+        <helpers>
+            <autocomplete>
+                <class>Bc_Search_Helper</class>
+            </autocomplete>
+        </helpers>
+        <models>
+            <autocomplete>
+                <class>Bc_Search_Model</class>
+            </autocomplete>
+        </models>
+    </global>
+    <frontend>
+        <routers>
+            <autocomplete>
+                <use>standard</use>
+                <args>
+                    <module>Bc_Search</module>
+                    <frontName>autocomplete</frontName>
+                </args>
+            </autocomplete>
+        </routers>
+        <layout>
+            <updates>
+                <autocomplete>
+                    <file>Bc_Search.xml</file>
+                </autocomplete>
+            </updates>
+        </layout>
+    </frontend>
+    <adminhtml>
+        <acl>
+            <resources>
+                <admin>
+                    <children>
+                        <system>
+                            <children>
+                                <config>
+                                    <children>
+                                        <autocomplete translate="title" module="autocomplete">
+                                            <title>Search Autocomplete Section</title>
+                                        </autocomplete>
+                                    </children>
+                                </config>
+                            </children>
+                        </system>
+                    </children>
+                </admin>
+            </resources>
+        </acl>
+    </adminhtml>
+    <default>
+        <autocomplete>
+            <general>
+                <enabled>1</enabled>
+                <product_limit>5</product_limit>
+                <not_found_notice>Your search returns no results.</not_found_notice>
+            </general>
+        </autocomplete>
+    </default>
 </config>
