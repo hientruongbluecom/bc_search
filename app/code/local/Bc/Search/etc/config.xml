@@ -64,6 +64,7 @@
         <autocomplete>
             <general>
                 <enabled>1</enabled>
+                <minchar>2</minchar>
                 <product_limit>5</product_limit>
                 <not_found_notice>Your search returns no results.</not_found_notice>
             </general>

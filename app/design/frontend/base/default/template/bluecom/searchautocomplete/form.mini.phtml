@@ -1,0 +1,30 @@
+<?php
+$catalogSearchHelper =  $this->helper('catalogsearch');
+?>
+<form id="search_mini_form" action="<?php echo $catalogSearchHelper->getResultUrl() ?>" method="get">
+    <div class="form-search form-search-autocomplete">
+		<label for="search"><?php echo $this->__('Search:') ?></label>
+		<input id="search" type="search" name="<?php echo $catalogSearchHelper->getQueryParamName() ?>" value="<?php echo $catalogSearchHelper->getEscapedQueryText() ?>" class="input-text required-entry" maxlength="<?php echo $catalogSearchHelper->getMaxQueryLength();?>" placeholder="<?php echo $this->quoteEscape($this->__('Search entire store here...')) ?>" />
+		<button type="submit" id="basic-search" title="<?php echo $this->quoteEscape($this->__('Search')) ?>" class="button search-button"><span><span><?php echo $this->__('Search') ?></span></span></button>
+	</div>
+
+	<script type="text/javascript">
+		//<![CDATA[
+		var searchForm = new Varien.searchForm('search_mini_form', 'search', '');
+        var ajaxUrl='<?php echo Mage::helper('autocomplete')->getAjaxurl(); ?>';
+        var queryDelay = 0.5;
+        var progressImage ='<?php echo $this->getSkinUrl('images/ajax-loader.gif');?>';
+        var minCharacters = '<?php echo Mage::helper('autocomplete')->getMinChar(); ?>';
+
+        document.observe('dom:loaded',function(){
+            $$('.form-search')[0].insert({
+                after:'<div id="search-autocomplete"><div id="searchr-result-containter"><div id="autocomplete-content"><div id="search-result"></div></div></div></div>'
+            });
+            $('searchr-result-containter').hide();
+            var acLayout = new Autocomplete();
+            acLayout.initAutocomplete(ajaxUrl, 'search-result');
+            //});
+        })
+		//]]>
+	</script>
+</form>

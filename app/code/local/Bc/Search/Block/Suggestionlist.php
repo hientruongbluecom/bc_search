@@ -1,14 +1,11 @@
 <?php
-class Bc_Search_Block_Suggestionlist extends Mage_Core_Block_Template
+class Bc_Search_Block_Suggestionlist extends Mage_Catalog_Block_Product_Abstract
 {
-
-    public function _prepareLayout() {
-
-        return parent::_prepareLayout();
+    public function __construct(){
+        $this->setTemplate('bluecom/searchautocomplete/suggestionlist.phtml');
     }
 
-
-    public function suggestListProduct() {
+    public function getProductCollection(){
 
         $query = Mage::helper('catalogsearch')->getQuery();
 
@@ -26,20 +23,37 @@ class Bc_Search_Block_Suggestionlist extends Mage_Core_Block_Template
 
         $result->addAttributeToFilter('visibility', array('neq' => 1));
 
-        if (Mage::getStoreConfig('autocomplete/general/product_limit')) {
+        $attrSearch = Mage::getStoreConfig('autocomplete/general/search_attributes');
+        if(!empty($attrSearch)){
+            $selectedSearchAttributes = explode(',',$attrSearch);
+            $searchArray = array();
+            foreach($selectedSearchAttributes as $searchAttrib){
+                $searchArray[] = array('attribute' => $searchAttrib, 'like' => '%'.Mage::helper('catalogsearch')->getQuery()->getQueryText().'%');
+            }
+            $result->addAttributeToFilter($searchArray);
+        }
+        $result->addAttributeToFilter('visibility', array('neq' => 1));
 
-            $result->setPageSize(Mage::getStoreConfig('autocomplete/general/product_limit'));
+        $sortAttri = Mage::getStoreConfig('autocomplete/general/sort_attributes');
+
+        if(!empty($sortAttri)){
+            $result->addAttributeToSort($sortAttri,'asc');
+        }
+
+        $_litmitProduct = $this->getProductLimit();
+        if ($_litmitProduct) {
+
+            $result->setPageSize($_litmitProduct);
         } else {
             $result->setPageSize(5);
         }
-        $result->addAttributeToSelect('sku');
-        $result->addAttributeToSelect('description');
-        $result->addAttributeToSelect('short_description');
-        $result->addAttributeToSelect('name');
-        $result->addAttributeToSelect('thumbnail');
-        $result->addAttributeToSelect('small_image');
-        $result->addAttributeToSelect('url_key');
 
         return $result;
     }
+    public function getProductLimit()
+    {
+        $productLimit = Mage::getStoreConfig('autocomplete/general/product_limit');
+        return $productLimit;
+    }
+
 }

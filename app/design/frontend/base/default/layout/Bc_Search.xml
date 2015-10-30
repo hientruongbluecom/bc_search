@@ -1,0 +1,19 @@
+<layout version="0.1.0">
+    <default>
+        <reference name="head">
+            <action ifconfig="autocomplete/general/enabled" method="addItem">
+                <type>skin_css</type>
+                <name>bluecom/searchautocomplete/css/autocomplete.css</name>
+            </action>
+        </reference>
+        <reference name="head">
+            <action ifconfig="autocomplete/general/enabled" method="addItem">
+                <type>skin_js</type>
+                <name>bluecom/searchautocomplete/js/autocomplete.js</name>
+            </action>
+        </reference>
+        <reference name="top.search">
+            <action method="setTemplate" ifconfig="autocomplete/general/enabled"><template>bluecom/searchautocomplete/form.mini.phtml</template></action>
+        </reference>
+    </default>
+</layout>

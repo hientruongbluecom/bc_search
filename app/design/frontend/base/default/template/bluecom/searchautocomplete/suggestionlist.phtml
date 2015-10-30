@@ -1,0 +1,72 @@
+<?php
+$catalogSearchHelper =  $this->helper('catalogsearch');
+$catalogSearchHelper->getEscapedQueryText();
+$url = $catalogSearchHelper->getResultUrl($catalogSearchHelper->getEscapedQueryText());
+$_productCollection = $this->getProductCollection();
+$_productCount = $_productCollection->count();
+$_helper = $this->helper('catalog/output');
+?>
+<?php echo $this->getMessagesBlock()->getGroupedHtml(); ?>
+
+<ul class="products-list">
+    <li id="autocomplete_hidden" class="autocomplete_hidden"><span style="text-align:center;"></li>
+    <?php if($_productCount == 0): ?>
+        <li class="notice-message"><?php echo Mage::helper('autocomplete')->getNoticeMessage(); ?></li>
+    <?php endif; ?>
+    <?php $counter = 0;foreach ($_productCollection as $_product): ?>
+        <?php
+        if(!$_product->getSku()){
+            $newProduct = Mage::getModel('catalog/product')->load($entityId);
+            $sku = $newProduct->getSku();
+            $_product->setData("sku",$sku);
+        }
+        $session=Mage::getSingleton('customer/session');
+        if($_product->getMinimalPrice()){
+            $_productprice = $_product->getMinimalPrice();
+        }else{
+            $_productprice = $_product->getFinalPrice();
+        }
+        if($session->isLoggedIn()){
+            $groupPrices = $_product->getData('group_price');
+            if(isset($groupPrices[$session->getCustomerGroupId()])){
+                $_productprice = $groupPrices[$session->getCustomerGroupId()]['price'];
+            }
+        }
+        ?>
+        <li class="<?php echo (++$counter + 1)%2?'odd':'even'?><?php if($counter==1){ echo ' first';}elseif($counter==$_productCollection->count()){ echo ' last';}  ?>">
+            <a href="<?php echo $_product->getProductUrl(); ?>" style="text-decoration:none;">
+                <div class="img-box-area">
+                    <img src="<?php echo $this->helper('catalog/image')->init($_product, 'small_image')->resize(80, 80); ?>" width="80" height="80" alt="<?php echo $this->stripTags($this->getImageLabel($_product, 'small_image'), null, true) ?>"/>
+                </div>
+                <div class="content-box-area" style="text-align: left ! important; font-size: 12px ! important;margin-left:80px !important;margin-right:5px !important;">
+                    <h3 style="text-align: left ! important; font-size: 12px ! important;"><?php echo $_product->getName(); ?></h3>
+                    <span><?php echo substr($_product->getShortDescription(), 0,100); ?> ...</span>
+                    <?php if($_product->getTypeID()=='bundle'): ?>
+                        <div class="auto-fright" style="">
+                            <div class="price-box">
+                                <p class="price-from">
+                                    <span class="price-label">From:</span>
+                                    <span class="price"><?php  echo Mage::helper('core')->currencyByStore($_product->getMinPrice()) ?></span>
+                                </p>
+                                <p class="price-to">
+                                    <span class="price-label">To:</span>
+                                    <span class="price"><?php  echo Mage::helper('core')->currencyByStore($_product->getMaxPrice()) ?></span>
+                                </p>
+                            </div>
+                        </div>
+                    <?php else: ?>
+                        <div class="auto-fright" style="">
+                            <?php echo $this->getPriceHtml($_product, true) ?>
+                        </div>
+                    <?php endif; ?>
+                </div>
+                <div class="clear"></div>
+            </a>
+        </li>
+        <?php //print_r($_product->getData()); ?>
+    <?php endforeach; ?>
+    <?php //exit; ?>
+</ul>
+<?php  if($_productCount): ?>
+    <div align="center"><a href="<?php echo $url ?>">View All</a></div>
+<?php endif; ?>
