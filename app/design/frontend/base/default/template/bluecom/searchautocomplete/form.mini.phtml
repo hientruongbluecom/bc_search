@@ -13,7 +13,7 @@ $catalogSearchHelper =  $this->helper('catalogsearch');
 		var searchForm = new Varien.searchForm('search_mini_form', 'search', '');
         var ajaxUrl='<?php echo Mage::helper('autocomplete')->getAjaxurl(); ?>';
         var queryDelay = 0.5;
-        var progressImage ='<?php echo $this->getSkinUrl('images/ajax-loader.gif');?>';
+        var progressImage ='<?php echo $this->getSkinUrl('bluecom/searchautocomplete/images/ajax-loader.gif');?>';
         var minCharacters = '<?php echo Mage::helper('autocomplete')->getMinChar(); ?>';
 
         document.observe('dom:loaded',function(){
