@@ -6,6 +6,11 @@ class Bc_Search_Helper_Data extends Mage_Core_Helper_Abstract{
         return $this->_getUrl('autocomplete/search/result', array('_secure' => Mage::app()->getFrontController()->getRequest()->isSecure()
         ));
     }
+    public function getProductLimit()
+    {
+        $productLimit = Mage::getStoreConfig('autocomplete/general/product_limit');
+        return $productLimit;
+    }
     public function getMinChar()
     {
         $minCharacters = 0;
