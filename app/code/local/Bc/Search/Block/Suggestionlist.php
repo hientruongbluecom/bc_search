@@ -7,22 +7,9 @@ class Bc_Search_Block_Suggestionlist extends Mage_Catalog_Block_Product_Abstract
 
     public function getProductCollection(){
 
-        $query = Mage::helper('catalogsearch')->getQuery();
+        $collection = Mage::getModel('autocomplete/autocomplete')->getCollection();
 
-        $query->setStoreId(Mage::app()->getStore()->getId());
-
-        if ($query->getRedirect()) {
-
-            $query->save();
-        } else {
-            $query->prepare();
-        }
-        Mage::helper('catalogsearch')->checkNotes();
-
-        $result = $query->getResultCollection();
-
-        $result->addAttributeToFilter('visibility', array('neq' => 1));
-
+        /* Start: Filter by Attribute */
         $attrSearch = Mage::getStoreConfig('autocomplete/general/search_attributes');
         if(!empty($attrSearch)){
             $selectedSearchAttributes = explode(',',$attrSearch);
@@ -30,25 +17,17 @@ class Bc_Search_Block_Suggestionlist extends Mage_Catalog_Block_Product_Abstract
             foreach($selectedSearchAttributes as $searchAttrib){
                 $searchArray[] = array('attribute' => $searchAttrib, 'like' => '%'.Mage::helper('catalogsearch')->getQuery()->getQueryText().'%');
             }
-            $result->addAttributeToFilter($searchArray);
+            $collection->addAttributeToFilter($searchArray);
         }
-        $result->addAttributeToFilter('visibility', array('neq' => 1));
-
         $sortAttri = Mage::getStoreConfig('autocomplete/general/sort_attributes');
 
         if(!empty($sortAttri)){
-            $result->addAttributeToSort($sortAttri,'asc');
+            $collection->addAttributeToSort($sortAttri,'asc');
         }
 
-        $_litmitProduct = $this->getProductLimit();
-        if ($_litmitProduct) {
 
-            $result->setPageSize($_litmitProduct);
-        } else {
-            $result->setPageSize(5);
-        }
-
-        return $result;
+        $collection->getSelect()->limit($this->getProductLimit());
+        return $collection;
     }
     public function getProductLimit()
     {
