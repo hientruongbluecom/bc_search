@@ -47,6 +47,10 @@ class Bc_Search_Model_Autocomplete extends Mage_Core_Model_Abstract
         $_productDatas =  $cache->load("bc_search_ajax");
         if(!$_productDatas){
 
+            $sortAttri = Mage::getStoreConfig('autocomplete/general/sort_attributes');
+
+            $sortAttri = empty($sortAttri)?'name':$sortAttri;
+
             $products_collection = Mage::getModel('catalog/product')
                 ->getCollection()
                 ->addAttributeToSelect('*')
@@ -56,6 +60,7 @@ class Bc_Search_Model_Autocomplete extends Mage_Core_Model_Abstract
                 ->addStoreFilter()
                 ->addUrlRewrite()
                 ->addFieldToFilter('visibility', Mage_Catalog_Model_Product_Visibility::VISIBILITY_BOTH)
+                ->addAttributeToSort($sortAttri,'asc')
                 ->load();
 
             $_productDatas = array();
